@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "692962089100",
+    "project_id": "me-reminder",
+    "storage_bucket": "me-reminder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692962089100:android:00036715b646b6d9b603a9",
+        "android_client_info": {
+          "package_name": "com.example.me_reminder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "692962089100-724fgbrea6e2lo27i7v3ekhltithambk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBY0I9aPxe_cdJK_5pGO4DwqXrXZo8DvxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "692962089100-4473fjqj4dqfa7erlpi3icgq422dftds.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
