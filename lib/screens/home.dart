@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:me_reminder/screens/login.dart';
 import 'package:me_reminder/widgets/main_card.dart';
 import 'package:me_reminder/widgets/main_drawer.dart';
 import 'package:me_reminder/widgets/upcoming_birthday_item.dart';
@@ -32,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.exit_to_app)),
         ],
       ),
-      drawer: MainDrawer(),
+      drawer: const MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.only(left: 30, top: 20),
         child: Column(
@@ -73,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 400,
                 child: ListView.separated(
                   itemCount: 10,
-                  itemBuilder: (context, index) => const UpcomingBirthdayItem(),
+                  itemBuilder: (context, index) => UpcomingBirthdayItem(temp: index.toString()),
                   separatorBuilder: (context, index) => const SizedBox(
                     height: 20,
                   ),

@@ -1,12 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:me_reminder/screens/sign_up.dart';
 import 'package:me_reminder/widgets/login_input.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-  
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -15,27 +14,115 @@ class _LoginScreenState extends State<LoginScreen> {
   var isVisible;
   var _enteredEmail;
   var _enteredPassword;
-  
+  var _enteredName;
+  var isLogin;
+
   @override
   void initState() {
     super.initState();
     isVisible = false;
+    isLogin = true;
   }
 
+  gSignIn() async {
+    final gUser = await GoogleSignIn().signIn();
+    final gAuth = await gUser!.authentication;
+    final credentials = GoogleAuthProvider.credential(
+      accessToken: gAuth.accessToken,
+      idToken: gAuth.idToken,
+    );
+    return await FirebaseAuth.instance.signInWithCredential(credentials);
+  }
+
+  void emailSignIn() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _enteredEmail, password: _enteredPassword);
+    } on FirebaseAuthException catch (error) {
+      String errorText = "";
+      switch (error.code) {
+        case "user-not-found":
+          errorText = "User with this email not found";
+          break;
+        case "invalid-email":
+          errorText = "Please enter a valid email";
+          break;
+        case "wrong-password":
+          errorText = "Please the correct password password";
+          break;
+        default:
+          errorText = "Some error occured";
+      }
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(error.code
+              .replaceAll("-", " ")
+              .split(" ")
+              .map((word) => word[0].toUpperCase() + word.substring(1))
+              .join(" ")),
+          content: Text(errorText),
+          actions: [
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                },
+                child: const Text("Close"))
+          ],
+        ),
+      );
+    }
+  }
+
+  void registerUser() async {
+    try {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _enteredEmail, password: _enteredPassword);
+
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _enteredEmail, password: _enteredPassword);
+
+      FirebaseAuth.instance.currentUser!.updateDisplayName(_enteredName);
+
+    } on FirebaseAuthException catch (error) {
+      String errorText = "";
+      switch (error.code) {
+        case "email-already-in-use":
+          errorText = "This email is already registered";
+          break;
+        case "invalid-email":
+          errorText = "Please enter a valid email";
+          break;
+        case "weak-password":
+          errorText = "Please enter a strong password";
+          break;
+        default:
+          errorText = "Some error occured";
+      }
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(error.code
+              .replaceAll("-", " ")
+              .split(" ")
+              .map((word) => word[0].toUpperCase() + word.substring(1))
+              .join(" ")),
+          content: Text(errorText),
+          actions: [
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                },
+                child: const Text("Close"))
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    gSignIn() async {
-      final gUser = await GoogleSignIn().signIn();
-      final gAuth = await gUser!.authentication;
-      final credentials = GoogleAuthProvider.credential(
-        accessToken: gAuth.accessToken,
-        idToken: gAuth.idToken,
-      );
-      return await FirebaseAuth.instance.signInWithCredential(credentials);
-    }
-
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -52,15 +139,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: [
                       Text(
-                        "Welcome Back",
+                        (isLogin) ? "Welcome Back" : "Register",
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        "Login with your email and password",
+                         (isLogin) ? "Login with your email and password" : "Create a new user account",
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       const SizedBox(height: 40),
+                      if(!isLogin)
+                        LoginInput(
+                          hint: "Name",
+                          prefix: const Icon(Icons.person_add_alt_1),
+                          getText: (text) {
+                            _enteredName = text;
+                          },
+                          visibility: true,
+                        ),
+                        const SizedBox(height: 20),
                       LoginInput(
                         hint: "Email",
                         prefix: const Icon(Icons.mail),
@@ -79,7 +176,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               isVisible = !isVisible;
                             });
                           },
-                          icon: (isVisible) ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility),
+                          icon: (isVisible)
+                              ? const Icon(Icons.visibility_off)
+                              : const Icon(Icons.visibility),
                         ),
                         getText: (text) {
                           _enteredPassword = text;
@@ -91,38 +190,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: double.maxFinite,
                         height: 50,
                         child: FilledButton(
-                          onPressed: () async {
-                            try {
-                              FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                      email: _enteredEmail,
-                                      password: _enteredPassword);
-                            } on FirebaseAuthException catch (error) {
-                              String errorText = "";
-                              switch (error.code) {
-                                case "user-not-found":
-                                  errorText =
-                                      "User with this email not found";
-                                  break;
-                                case "invalid-email":
-                                  errorText = "Please enter a valid email";
-                                  break;
-                                case "wrong-password":
-                                  errorText = "Please the correct password password";
-                                  break;
-                                default:
-                                  errorText = "Some error occured";
-                              }
-                              ScaffoldMessenger.of(context).clearSnackBars();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(errorText),
-                                ),
-                              );
-                            }
-                          },
+                          onPressed: (isLogin) ? emailSignIn : registerUser,
                           child: Text(
-                            "Login",
+                            (isLogin) ? "Login" : "Sign Up",
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium!
@@ -168,13 +238,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 20),
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (ctx) => const SignUpScreen()),
-                              (route) => false);
+                          setState(() {
+                            isLogin = !isLogin;
+                          });
                         },
                         child: Text(
-                          "New User ?",
+                          (isLogin) ? "New User ?" : "Already have an account ?",
                           style: Theme.of(context)
                               .textTheme
                               .titleSmall!
