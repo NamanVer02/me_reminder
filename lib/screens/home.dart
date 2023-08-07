@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:me_reminder/data/birthday_data.dart';
 import 'package:me_reminder/widgets/main_card.dart';
 import 'package:me_reminder/widgets/main_drawer.dart';
 import 'package:me_reminder/widgets/upcoming_birthday_item.dart';
@@ -13,11 +14,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final DateTime today = DateTime.now();
+  final DateFormat formatter = DateFormat('d MMMM, y');
+  final BirthdayDB db = BirthdayDB();
+
+  @override
+  void initState() {
+    db.updateList();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final DateTime today = DateTime.now();
-    final DateFormat formatter = DateFormat('d MMMM, y');
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -27,8 +35,18 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () {
               FirebaseAuth.instance.signOut();
-            }, 
-            icon: const Icon(Icons.exit_to_app)),
+            },
+            icon: const Icon(Icons.exit_to_app),
+          ),
+          IconButton(
+            onPressed: () {
+              db.clearBox();
+            },
+            icon: const Icon(
+              Icons.clear,
+              color: Colors.red,
+            ),
+          ),
         ],
       ),
       drawer: const MainDrawer(),
@@ -61,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 30,
             ),
             Text(
-              "Upcoming Birthdays",
+              db.birthdayData.length.toString(),
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(
@@ -71,8 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SizedBox(
                 height: 400,
                 child: ListView.separated(
-                  itemCount: 10,
-                  itemBuilder: (context, index) => UpcomingBirthdayItem(temp: index.toString()),
+                  itemCount: db.birthdayData.length,
+                  itemBuilder: (context, index) => UpcomingBirthdayItem(
+                    name: db.birthdayData[index].name,
+                    date: db.birthdayData[index].date,
+                    uid: db.birthdayData[index].uid,
+                  ),
                   separatorBuilder: (context, index) => const SizedBox(
                     height: 20,
                   ),

@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:random_avatar/random_avatar.dart';
+import 'package:hive/hive.dart';
 
-class UpcomingBirthdayItem extends StatelessWidget {
-  const UpcomingBirthdayItem({super.key, this.temp});
+class UpcomingBirthdayItem extends StatefulWidget {
+  const UpcomingBirthdayItem({super.key, required this.name, required this.uid, required this.date});
 
-  final temp;
+  final name;
+  final uid;
+  final DateTime date;
 
+  @override
+  State<UpcomingBirthdayItem> createState() => _UpcomingBirthdayItemState();
+}
+
+class _UpcomingBirthdayItemState extends State<UpcomingBirthdayItem> {
+  int _calculateDifference(){
+    var from = DateTime(DateTime.now().year, widget.date.month, widget.date.day);
+    var difference = DateTime.now().difference(from).inDays;
+    return difference;
+  }
+  
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -16,20 +31,20 @@ class UpcomingBirthdayItem extends StatelessWidget {
           color: Colors.amberAccent,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: RandomAvatar(temp, trBackground: true),
+        child: RandomAvatar(widget.uid, trBackground: true),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Lia Chen",
+            widget.name,
             style: Theme.of(context).textTheme.titleMedium,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                "27",
+                widget.date.day.toString(),
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(
@@ -39,11 +54,11 @@ class UpcomingBirthdayItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "August",
+                    DateFormat('MMMM').format(widget.date),
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   Text(
-                    "3 days remaining",
+                    "${_calculateDifference()} days remaining",
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ],

@@ -1,14 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:me_reminder/models/birthday.dart';
 import 'package:me_reminder/screens/home.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:me_reminder/screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await Hive.initFlutter();
+  Hive.registerAdapter(BirthdayAdapter());
+  var box = await Hive.openBox("birthdays");
+
   runApp(MyApp());
 }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:me_reminder/data/birthday_data.dart';
+import 'package:me_reminder/models/birthday.dart';
 import 'package:random_avatar/random_avatar.dart';
 import 'package:uuid/uuid.dart';
 
@@ -11,6 +13,7 @@ class AddBirthdayScreen extends StatefulWidget {
 }
 
 class _AddBirthdayScreenState extends State<AddBirthdayScreen> {
+  var _enteredName;
   var _selectedDate = DateTime.now();
   var _uid;
 
@@ -76,6 +79,7 @@ class _AddBirthdayScreenState extends State<AddBirthdayScreen> {
                           SizedBox(
                             width: 180,
                             child: TextFormField(
+                              onChanged: (value){_enteredName = value;},
                               style: Theme.of(context).textTheme.titleMedium,
                               decoration:
                                   const InputDecoration(hintText: "Name",),
@@ -134,7 +138,8 @@ class _AddBirthdayScreenState extends State<AddBirthdayScreen> {
                   height: 40,
                   child: FilledButton(
                     onPressed: () {
-                      print(_selectedDate);
+                      BirthdayDB().putData(Birthday(name: _enteredName, date: _selectedDate, uid: _uid));
+                      Navigator.of(context).pop();
                     },
                     child: Text(
                       "Add",
