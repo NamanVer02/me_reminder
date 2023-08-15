@@ -15,33 +15,38 @@ class MainCard extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         clipBehavior: Clip.hardEdge,
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-              Color.fromRGBO(156, 113, 198, 1),
-              Color.fromRGBO(93, 46, 138, 1)
+              Theme.of(context).colorScheme.primaryContainer,
+              Theme.of(context).colorScheme.primary,
             ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Today's Birthday",
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Text(
-                name,
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: Colors.white,
-                    ),
-                overflow: TextOverflow.ellipsis,
-              )
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Today's Birthday",
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  name,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: Colors.white,
+                      ),
+                  overflow: TextOverflow.ellipsis,
+                  
+                )
+              ],
+            ),
           ),
         ),
       ),

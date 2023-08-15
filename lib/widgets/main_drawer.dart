@@ -1,18 +1,26 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:me_reminder/services/birthday_data.dart';
 import 'package:me_reminder/screens/add_birthday.dart';
+import 'package:me_reminder/screens/all_birthdays.dart';
 import 'package:random_avatar/random_avatar.dart';
 
 class MainDrawer extends StatelessWidget {
-  const MainDrawer({super.key});
+  MainDrawer({super.key, required this.db});
+
+  final BirthdayDB db;
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DrawerHeader(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("lib/assets/images/drawer_banner.jpg"), fit: BoxFit.cover),
+            ),
             child: Row(
               children: [
                 CircleAvatar(
@@ -24,7 +32,8 @@ class MainDrawer extends StatelessWidget {
                 ),
                 Text(
                   FirebaseAuth.instance.currentUser!.displayName.toString(),
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Colors.white, fontWeight: FontWeight.w500),
                 )
               ],
             ),
@@ -44,9 +53,11 @@ class MainDrawer extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pop();
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (ctx) => const AddBirthdayScreen()));
+                context,
+                MaterialPageRoute(
+                  builder: (ctx) => const AddBirthdayScreen(),
+                ),
+              );
             },
           ),
           ListTile(
@@ -61,6 +72,10 @@ class MainDrawer extends StatelessWidget {
                   .titleSmall!
                   .copyWith(fontSize: 18),
             ),
+            onTap: (){
+              Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => AllBirthdaysScreen(db: db,)));
+            },
           ),
           const Expanded(child: SizedBox()),
           ListTile(

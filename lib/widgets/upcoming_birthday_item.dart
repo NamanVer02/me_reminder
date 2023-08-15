@@ -1,26 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:me_reminder/services/birthday_data.dart';
+import 'package:me_reminder/models/birthday.dart';
 import 'package:random_avatar/random_avatar.dart';
-import 'package:hive/hive.dart';
 
 class UpcomingBirthdayItem extends StatefulWidget {
-  const UpcomingBirthdayItem({super.key, required this.name, required this.uid, required this.date});
+  const UpcomingBirthdayItem(
+      {super.key,
+      required this.name,
+      required this.uid,
+      required this.date,
+      required this.db});
 
   final name;
   final uid;
   final DateTime date;
+  final BirthdayDB db;
 
   @override
   State<UpcomingBirthdayItem> createState() => _UpcomingBirthdayItemState();
 }
 
 class _UpcomingBirthdayItemState extends State<UpcomingBirthdayItem> {
-  int _calculateDifference(){
-    var from = DateTime(DateTime.now().year, widget.date.month, widget.date.day);
-    var difference = DateTime.now().difference(from).inDays;
-    return difference;
+  int _calculateDifference() {
+    var from =
+        DateTime(DateTime.now().year, widget.date.month, widget.date.day);
+    if (from.compareTo(DateTime.now()) < 0) {
+      from =
+          DateTime(DateTime.now().year + 1, widget.date.month, widget.date.day);
+    }
+    var difference = from.difference(DateTime.now()).inDays;
+    return difference + 1;
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -28,7 +40,7 @@ class _UpcomingBirthdayItemState extends State<UpcomingBirthdayItem> {
         height: 65,
         width: 55,
         decoration: BoxDecoration(
-          color: Colors.amberAccent,
+          //color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
           borderRadius: BorderRadius.circular(12),
         ),
         child: RandomAvatar(widget.uid, trBackground: true),
@@ -67,7 +79,56 @@ class _UpcomingBirthdayItemState extends State<UpcomingBirthdayItem> {
           )
         ],
       ),
-      trailing: IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+      trailing: IconButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text(
+                  "Are you sure you want to delete this birthday ?",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontSize: 25),
+                ),
+                content: SizedBox(
+                  child: Image.asset(
+                    "lib/assets/images/delete.gif",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        "No, take me back",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary),
+                      )),
+                  FilledButton(
+                    onPressed: () {
+                      widget.db.deleteBirthday(widget.uid);
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Yes",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall!
+                          .copyWith(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+          icon: const Icon(
+            Icons.delete_forever,
+            color: Colors.redAccent,
+          )),
     );
   }
 }

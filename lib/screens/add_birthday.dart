@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:me_reminder/data/birthday_data.dart';
+import 'package:me_reminder/services/birthday_data.dart';
 import 'package:me_reminder/models/birthday.dart';
+import 'package:me_reminder/screens/home.dart';
 import 'package:random_avatar/random_avatar.dart';
 import 'package:uuid/uuid.dart';
 
@@ -139,7 +140,8 @@ class _AddBirthdayScreenState extends State<AddBirthdayScreen> {
                   child: FilledButton(
                     onPressed: () {
                       BirthdayDB().putData(Birthday(name: _enteredName, date: _selectedDate, uid: _uid));
-                      Navigator.of(context).pop();
+                      Navigator.popUntil(context, (route) => false);
+                      Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const HomeScreen())).then((value) => setState((){}));
                     },
                     child: Text(
                       "Add",
