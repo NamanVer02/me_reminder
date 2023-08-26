@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:me_reminder/models/birthday.dart';
@@ -14,7 +15,18 @@ void main() async {
 
   await Hive.initFlutter();
   Hive.registerAdapter(BirthdayAdapter());
-  var box = await Hive.openBox("birthdays");
+  await Hive.openBox("birthdays");
+
+  AwesomeNotifications().initialize(
+    null,
+    [  
+      NotificationChannel(
+          channelKey: "birthdayNotif",
+          channelName: "Birthday Reminders",
+          channelDescription: "Allow notifications of upcoming birthdays.")
+    ],
+    debug: true,
+  );
 
   runApp(MyApp());
 }
@@ -52,10 +64,9 @@ class MyApp extends StatelessWidget {
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (ctx, snapshot) {
-          if(snapshot.hasData){
+          if (snapshot.hasData) {
             return const HomeScreen();
-          }
-          else{
+          } else {
             return const LoginScreen();
           }
         },

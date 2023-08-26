@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:me_reminder/screens/home.dart';
 import 'package:me_reminder/services/birthday_data.dart';
-import 'package:me_reminder/models/birthday.dart';
 import 'package:random_avatar/random_avatar.dart';
 
 class UpcomingBirthdayItem extends StatefulWidget {
@@ -111,7 +111,8 @@ class _UpcomingBirthdayItemState extends State<UpcomingBirthdayItem> {
                   FilledButton(
                     onPressed: () {
                       widget.db.deleteBirthday(widget.uid);
-                      Navigator.of(context).pop();
+                      Navigator.popUntil(context, (route) => false);
+                      Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const HomeScreen())).then((value) => setState((){}));
                     },
                     child: Text(
                       "Yes",

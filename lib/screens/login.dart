@@ -76,15 +76,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void registerUser() async {
     try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-              email: _enteredEmail, password: _enteredPassword);
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _enteredEmail, password: _enteredPassword);
 
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _enteredEmail, password: _enteredPassword);
 
       FirebaseAuth.instance.currentUser!.updateDisplayName(_enteredName);
-
     } on FirebaseAuthException catch (error) {
       String errorText = "";
       switch (error.code) {
@@ -144,11 +142,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 5),
                       Text(
-                         (isLogin) ? "Login with your email and password" : "Create a new user account",
+                        (isLogin)
+                            ? "Login with your email and password"
+                            : "Create a new user account",
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       const SizedBox(height: 40),
-                      if(!isLogin)
+                      if (!isLogin)
                         LoginInput(
                           hint: "Name",
                           prefix: const Icon(Icons.person_add_alt_1),
@@ -157,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                           visibility: true,
                         ),
-                        const SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       LoginInput(
                         hint: "Email",
                         prefix: const Icon(Icons.mail),
@@ -243,7 +243,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
                         },
                         child: Text(
-                          (isLogin) ? "New User ?" : "Already have an account ?",
+                          (isLogin)
+                              ? "New User ?"
+                              : "Already have an account ?",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall!
+                              .copyWith(
+                                  color: Theme.of(context).colorScheme.primary),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      TextButton(
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signInAnonymously();
+                          FirebaseAuth.instance.currentUser!.updateDisplayName("Guest");
+                        },
+                        child: Text(
+                          "Sign in as a guest",
                           style: Theme.of(context)
                               .textTheme
                               .titleSmall!

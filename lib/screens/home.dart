@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -50,6 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     db.updateList();
     initLists();
+
+    AwesomeNotifications().isNotificationAllowed().then((permission) {
+      if (!permission) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+
     super.initState();
   }
 
@@ -67,18 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             icon: const Icon(Icons.exit_to_app),
           ),
-          IconButton(
-            onPressed: () {
-              db.clearBox();
-            },
-            icon: const Icon(
-              Icons.clear,
-              color: Colors.red,
-            ),
-          ),
         ],
       ),
-      drawer: MainDrawer(db: db,),
+      drawer: MainDrawer(
+        db: db,
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -97,7 +98,9 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 180,
               child: ListView.separated(
                 shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 30,),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                ),
                 scrollDirection: Axis.horizontal,
                 itemCount: todayBirthday.length,
                 itemBuilder: (context, index) => MainCard(
@@ -113,7 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 30,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 30,),
+            padding: const EdgeInsets.only(
+              left: 30,
+            ),
             child: Text(
               "Upcoming Birthdays",
               style: Theme.of(context).textTheme.titleMedium,
@@ -124,9 +129,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Center(
             child: Padding(
-              padding: const EdgeInsets.only(left: 20,),
+              padding: const EdgeInsets.only(
+                left: 20,
+              ),
               child: SizedBox(
-                height: 100,
+                height: MediaQuery.of(context).size.height * 0.4,
                 child: ListView.separated(
                   itemCount: upcomingBirthday.length,
                   itemBuilder: (context, index) => UpcomingBirthdayItem(
