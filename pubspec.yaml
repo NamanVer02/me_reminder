@@ -49,6 +49,7 @@ dependencies:
   hive_flutter: ^1.1.0
   flutter_local_notifications: ^15.1.0+1
   awesome_notifications: ^0.6.19
+  focused_menu: ^1.0.5
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +81,7 @@ flutter:
     - lib/assets/images/add_birthday.png
     - lib/assets/images/blob1.png
     - lib/assets/images/drawer_banner.jpg
+    - lib/assets/images/empty.png
     - lib/assets/images/delete.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see

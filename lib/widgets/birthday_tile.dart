@@ -19,8 +19,8 @@ class BirthdayTile extends StatelessWidget {
           ],
         ),
       ),
-      height: 90,
-      width: 90,
+      height: MediaQuery.of(context).size.width * 0.25,
+      width: MediaQuery.of(context).size.width * 0.25,
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(

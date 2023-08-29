@@ -17,9 +17,10 @@ class AddBirthdayScreen extends StatefulWidget {
 class _AddBirthdayScreenState extends State<AddBirthdayScreen> {
   var _enteredName;
   var _selectedDate = DateTime.now();
-  var _selectedTime = Duration();
+  var _selectedTime = const Duration();
   var _uid;
   bool customTime = false;
+  bool validName = false;
 
   void _showDialog(Widget child) {
     showCupertinoModalPopup<void>(
@@ -102,13 +103,24 @@ class _AddBirthdayScreenState extends State<AddBirthdayScreen> {
                           ),
                           SizedBox(
                             width: 180,
-                            child: TextFormField(
-                              onChanged: (value) {
-                                _enteredName = value;
-                              },
-                              style: Theme.of(context).textTheme.titleMedium,
-                              decoration: const InputDecoration(
-                                hintText: "Name",
+                            child: Form(
+                              child: TextFormField(
+                                validator: (text) {
+                                  if (text == null || text.trim().isEmpty) {
+                                    validName = false;
+                                    return "Please enter a valid name";
+                                  } else {
+                                    validName = true;
+                                  }
+                                },
+                                autovalidateMode: AutovalidateMode.always,
+                                onChanged: (value) {
+                                  _enteredName = value;
+                                },
+                                style: Theme.of(context).textTheme.titleMedium,
+                                decoration: const InputDecoration(
+                                  hintText: "Name",
+                                ),
                               ),
                             ),
                           ),
@@ -211,31 +223,39 @@ class _AddBirthdayScreenState extends State<AddBirthdayScreen> {
                   height: 40,
                   child: FilledButton(
                     onPressed: () {
-                      BirthdayDB().putData(Birthday(
-                          name: _enteredName, date: _selectedDate, uid: _uid));
+                      if (validName) {
+                        BirthdayDB().putData(
+                          Birthday(
+                              name: _enteredName,
+                              date: _selectedDate,
+                              uid: _uid),
+                        );
 
-                      AwesomeNotifications().createNotification(
-                        content: NotificationContent(
-                          id: 0,
-                          channelKey: "birthdayNotif",
-                          title: "It is $_enteredName's Birthday today 🥳",
-                        ),
-                        schedule: NotificationCalendar(
-                          day: _selectedDate.day,
-                          month: _selectedDate.month,
-                          hour:
-                              (customTime) ? _selectedTime.inHours.toInt() : 0,
-                          minute: (customTime)
-                              ? _selectedTime.inMinutes.toInt() % 60
-                              : 0,
-                        ),
-                      );
-
-                      Navigator.popUntil(context, (route) => false);
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(
-                              builder: (ctx) => const HomeScreen()))
-                          .then((value) => setState(() {}));
+                        AwesomeNotifications().createNotification(
+                          content: NotificationContent(
+                            id: 0,
+                            channelKey: "birthdayNotif",
+                            title: "It is $_enteredName's Birthday today 🥳",
+                          ),
+                          schedule: NotificationCalendar(
+                            repeats: true,
+                            day: _selectedDate.day,
+                            month: _selectedDate.month,
+                            hour: (customTime)
+                                ? _selectedTime.inHours.toInt()
+                                : 0,
+                            minute: (customTime)
+                                ? _selectedTime.inMinutes.toInt() % 60
+                                : 0,
+                            second: 0,
+                          ),
+                        );
+                        Navigator.popUntil(context, (route) => false);
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(
+                                builder: (ctx) => const HomeScreen()))
+                            .then((value) => setState(() {}));
+                      }
                     },
                     child: Text(
                       "Add",

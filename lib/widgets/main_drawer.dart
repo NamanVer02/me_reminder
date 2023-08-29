@@ -77,6 +77,65 @@ class MainDrawer extends StatelessWidget {
               Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => AllBirthdaysScreen(db: db,)));
             },
           ),
+          ListTile(
+            leading: const Icon(
+              Icons.delete_outline_outlined,
+              color: Colors.black,
+            ),
+            title: Text(
+              "Delete All Birthdays",
+              style: Theme.of(context)
+                  .textTheme
+                  .titleSmall!
+                  .copyWith(fontSize: 18),
+            ),
+            onTap: (){
+              showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text(
+                  "Are you sure you want to delete all birthdays ?",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontSize: 25),
+                ),
+                content: SizedBox(
+                  child: Image.asset(
+                    "lib/assets/images/delete.gif",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        "No, take me back",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary),
+                      )),
+                  FilledButton(
+                    onPressed: () {
+                      db.clearBox();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Yes",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall!
+                          .copyWith(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            );
+            },
+          ),
           const Expanded(child: SizedBox()),
           ListTile(
             leading: const Icon(

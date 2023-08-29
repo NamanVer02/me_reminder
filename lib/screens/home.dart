@@ -134,18 +134,29 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.4,
-                child: ListView.separated(
-                  itemCount: upcomingBirthday.length,
-                  itemBuilder: (context, index) => UpcomingBirthdayItem(
-                    name: upcomingBirthday[index].name,
-                    date: upcomingBirthday[index].date,
-                    uid: upcomingBirthday[index].uid,
-                    db: db,
-                  ),
-                  separatorBuilder: (context, index) => const SizedBox(
-                    height: 20,
-                  ),
-                ),
+                child: (upcomingBirthday.isNotEmpty)
+                    ? ListView.separated(
+                        itemCount: upcomingBirthday.length,
+                        itemBuilder: (context, index) => UpcomingBirthdayItem(
+                          name: upcomingBirthday[index].name,
+                          date: upcomingBirthday[index].date,
+                          uid: upcomingBirthday[index].uid,
+                          db: db,
+                        ),
+                        separatorBuilder: (context, index) => const SizedBox(
+                          height: 20,
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          Image.asset(
+                            "lib/assets/images/empty.png",
+                            height: 300,
+                            width: 300,
+                          ),
+                          Text("No birthday data to show", style: Theme.of(context).textTheme.bodyMedium,),
+                        ],
+                      ),
               ),
             ),
           ),

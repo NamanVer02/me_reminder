@@ -16,6 +16,7 @@ class BirthdayDB {
 
   void clearBox() {
     birthdayBox.clear();
+    birthdayData.clear();
   }
 
   void sortList() {
