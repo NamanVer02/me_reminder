@@ -20,10 +20,6 @@ class _AllBirthdaysScreenState extends State<AllBirthdaysScreen> {
     
     widget.db.sortList();
 
-    void _refresh(){
-      setState(() {});
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("All Birthdays"),
@@ -36,7 +32,7 @@ class _AllBirthdaysScreenState extends State<AllBirthdaysScreen> {
             children: [
               for(var month in monthList)
                 if(widget.db.birthdayData.where((element) => DateFormat('MMMM').format(element.date) == month).toList().isNotEmpty)
-                  BirthdayMonth(month: month, db: widget.db, refreshParent: _refresh,),
+                  BirthdayMonth(month: month, db: widget.db),
             ],
           ),
         ),

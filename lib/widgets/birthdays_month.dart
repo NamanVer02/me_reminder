@@ -7,11 +7,10 @@ import 'package:me_reminder/models/birthday.dart';
 import 'package:me_reminder/widgets/birthday_tile.dart';
 
 class BirthdayMonth extends StatefulWidget {
-  const BirthdayMonth({super.key, required this.month, required this.db, required this.refreshParent});
+  const BirthdayMonth({super.key, required this.month, required this.db});
 
   final String month;
   final BirthdayDB db;
-  final void Function() refreshParent;
 
   @override
   State<BirthdayMonth> createState() => _BirthdayMonthState();
@@ -53,7 +52,7 @@ class _BirthdayMonthState extends State<BirthdayMonth> {
                 onPressed: () {
                   setState(() {
                     widget.db.deleteBirthday(_monthList[index].uid);
-                    widget.refreshParent();
+                    
                   });
                 },
                 trailingIcon: const Icon(Icons.delete, color: Colors.red,),

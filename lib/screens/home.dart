@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:me_reminder/services/birthday_data.dart';
 import 'package:me_reminder/models/birthday.dart';
+import 'package:me_reminder/services/search_delegate.dart';
 import 'package:me_reminder/widgets/main_card.dart';
 import 'package:me_reminder/widgets/main_drawer.dart';
 import 'package:me_reminder/widgets/upcoming_birthday_item.dart';
@@ -21,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final BirthdayDB db = BirthdayDB();
   final List<Birthday> todayBirthday = [];
   final List<Birthday> upcomingBirthday = [];
+  final List<String> searchTerms = [];
 
   void initLists() {
     db.sortList();
@@ -45,6 +47,10 @@ class _HomeScreenState extends State<HomeScreen> {
         upcomingBirthday.add(item);
       }
     }
+
+    for(var birthday in db.birthdayData){
+      searchTerms.add(birthday.name);
+    }
   }
 
   @override
@@ -68,7 +74,16 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 0,
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          IconButton(onPressed: () {
+            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(builder: (ctx) => const HomeScreen()));
+          }, icon: const Icon(Icons.refresh)),
+          IconButton(
+            onPressed: () {
+              showSearch(context: context, delegate: CustomSearchClass(searchTerms: searchTerms));
+            },
+            icon: const Icon(Icons.search),
+          ),
           IconButton(
             onPressed: () {
               FirebaseAuth.instance.signOut();
