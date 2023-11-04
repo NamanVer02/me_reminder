@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class MainCard extends StatelessWidget {
-  const MainCard({super.key, required this.name});
+  const MainCard({super.key, required this.name, required this.includeTitle});
 
   final name;
+  final includeTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +27,14 @@ class MainCard extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "Today's Birthday",
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                ),
+                if(includeTitle)
+                  Text(
+                    "Today's Birthday",
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                  ),
                 const SizedBox(
                   height: 5,
                 ),

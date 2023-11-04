@@ -55,7 +55,7 @@ class _BirthdayMonthState extends State<BirthdayMonth> {
                     
                   });
                 },
-                trailingIcon: const Icon(Icons.delete, color: Colors.red,),
+                trailingIcon: const Icon(Icons.delete, color: Colors.red, size: Checkbox.width,),
               )
             ],
             child: BirthdayTile(

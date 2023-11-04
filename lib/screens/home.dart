@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final BirthdayDB db = BirthdayDB();
   final List<Birthday> todayBirthday = [];
   final List<Birthday> upcomingBirthday = [];
-  final List<String> searchTerms = [];
+  final List<Birthday> searchTerms = [];
 
   void initLists() {
     db.sortList();
@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     for(var birthday in db.birthdayData){
-      searchTerms.add(birthday.name);
+      searchTerms.add(birthday);
     }
   }
 
@@ -117,9 +117,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   horizontal: 30,
                 ),
                 scrollDirection: Axis.horizontal,
-                itemCount: todayBirthday.length,
-                itemBuilder: (context, index) => MainCard(
+                itemCount: (todayBirthday.isEmpty) ? 1 : todayBirthday.length,
+                itemBuilder: (context, index) => (todayBirthday.isNotEmpty) ? MainCard(
                   name: todayBirthday[index].name.toString().toUpperCase(),
+                  includeTitle: true,
+                ) : const MainCard(
+                  name: "No Birthdays Today",
+                  includeTitle: false,
                 ),
                 separatorBuilder: (context, index) => const SizedBox(
                   width: 10,
@@ -166,8 +170,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Image.asset(
                             "lib/assets/images/empty.png",
-                            height: 300,
-                            width: 300,
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            width: MediaQuery.of(context).size.height * 0.3,
                           ),
                           Text("No birthday data to show", style: Theme.of(context).textTheme.bodyMedium,),
                         ],
